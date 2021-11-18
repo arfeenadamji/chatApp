@@ -7,6 +7,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from "./src/component/auth/login"
 import RegisterScreen from './src/component/auth/register';
 
+import firebase from './src/firebase'
+
 const Stack = createStackNavigator();
 export default function App() {
   return (

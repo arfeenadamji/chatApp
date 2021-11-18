@@ -7,6 +7,7 @@ export default function Login() {
     
     const onSignIn=() =>{
         alert('khk')
+        firebase.auth().signInWithuserAndPassword(email,pass)
     }
     return (
         <View style={{justifyContent:'center',alignItems:'center'}}>
@@ -16,7 +17,7 @@ export default function Login() {
           autoCapitalize="none"
           value={email}
           style={styles.inputEmail}
-          onChangeText={(email) => this.setState({email})}
+          onChangeText={(email) => setEmail({email})}
         />
   
         <TextInput
@@ -24,7 +25,7 @@ export default function Login() {
           autoCapitalize="none"
           value={pass}
           style={styles.inputPassword}
-          onChangeText={(pass) => this.setState({pass})}
+          onChangeText={(pass) => setPass({pass})}
         />
         <Button
           style={[styles.btn]}
