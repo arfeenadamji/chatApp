@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from "./src/component/auth/login"
 import RegisterScreen from './src/component/auth/register';
+import UsersScreen from './src/component/screen/users';
 
 import firebase from './src/firebase'
 
@@ -17,6 +18,8 @@ export default function App() {
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Users" component={UsersScreen} />
+
         </Stack.Navigator>
       </NavigationContainer>
     </View>
