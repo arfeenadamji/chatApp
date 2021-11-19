@@ -1,37 +1,38 @@
 import React,{useState} from 'react'
 import { View,Text,StyleSheet,TextInput,Button } from 'react-native'
 import * as firebase from 'firebase'
+import { saveUser}  from '../../redux/action/index'
+import { connect, useDispatch, useSelector } from 'react-redux'
 
 export default function Login(props) {
-    const [email,setEmail] = useState('')
-    const[pass, setPass] = useState('')
+  const dispatch = useDispatch()
+
+
+
+    const [email,setEmail] = useState('temp@test.com')
+    const[pass, setPass] = useState('test123')
     
     const onSignIn=() =>{
-      
         firebase.auth().signInWithEmailAndPassword(email,pass)
         .then((result) =>{
          if(result !== undefined){
-          // console.log('result from login ', result.email)
-          props.navigation.navigate('Users, {}');
-         }else{console.log('error from login',error)}
+          firebase.firestore().collection('users')
+        .doc(firebase.auth().currentUser?.uid)
+        .get()
+        .then((snapshot) =>{
+            if(snapshot.exists){
+                dispatch({type:'USER_STATE_CHANGE', currentUser:snapshot.data()})
+                props.navigation.navigate('Users',{uid: firebase.auth().currentUser.uid});
+            } else{
+                console.log('error from action while saving user',error)
+            }
+        })
+         }else{console.log(error)}
+        }).catch((err) =>{
+            console.log('errerr',err)
         })
     }      
 
-    // const onRegister=() =>{
-    //   firebase.auth().createUserWithEmailAndPassword(email,pass)
-    //   .then((result) =>{
-    //     firebase.firestore().collection('users')
-    //     .doc(result.user.uid)
-    //     .set({
-    //       name,
-    //       email
-    //     })
-    //     console.log('result from register',result)
-    //   })
-    //   .catch((error) =>{
-    //     console.log('error from signUp',error)
-    //   })
-    // }
     return (
         <View style={{justifyContent:'center',alignItems:'center'}}>
         <Text style={styles.heading}>Login Screen</Text>

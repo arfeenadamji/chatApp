@@ -10,10 +10,18 @@ import UsersScreen from './src/component/screen/users';
 
 import firebase from './src/firebase'
 
+import {Provider} from 'react-redux'
+import { createStore,applyMiddleware } from 'redux';
+import rootReducer from './src/redux/reducers'
+import thunk from 'redux-thunk';
+
+const store = createStore(rootReducer,applyMiddleware(thunk))
+
 const Stack = createStackNavigator();
 export default function App() {
   return (
     <View style={styles.container}>
+      <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -22,6 +30,7 @@ export default function App() {
 
         </Stack.Navigator>
       </NavigationContainer>
+      </Provider>
     </View>
   );
 }

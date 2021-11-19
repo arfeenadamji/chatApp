@@ -15,7 +15,8 @@ export default function Register(props) {
                 .doc(result.user.uid)
                 .set({
                     name,
-                    email
+                    email,
+                    uid: result.user.uid
                 })
                 alert('user register')
                 props.navigation.navigate('Login')
@@ -36,6 +37,7 @@ export default function Register(props) {
                 <TextInput
                     style={styles.input}
                     placeholder="email"
+                    autoCapitalize={false}
                     onChangeText={(email) =>setEmail(email)}
                 />
                 <TextInput
