@@ -1,12 +1,12 @@
 import React,{Component} from 'react'
-import {View, Text,Button,FlatList} from 'react-native';
+import {View, Text,Button,FlatList,TouchableOpacity} from 'react-native';
 
 import {saveUser} from '../../redux/action/index'
 
 import * as firebase from 'firebase';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { cos } from 'react-native-reanimated';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 class Users extends Component {
     constructor(props){
@@ -20,6 +20,20 @@ class Users extends Component {
         this.fetchUsers();
         console.log('props.route.params.uid from feed',this.props.route.params.uid)
        
+    }
+    setUser=()=>{
+        firebase.firestore().collection('parties').doc(this.props.route.params.uid).collection("messages").add({
+            // message: input,
+            timestamp: Date.now(),
+            
+            uid:this.props.route.params.uid
+
+         }); 
+    //     else {
+    //       alert('user object is null')
+    //    }
+        // .collection('party-1').doc(this.props.route.params.uid)
+        // this.props.navigation.navigate('Chat',{id:item.uid,name:item.name})
     }
     fetchUsers=()=>{
        
@@ -48,15 +62,23 @@ class Users extends Component {
         return (
             <View>
                 <Text>Users Screen</Text>
+                
                 <FlatList
+                style={{marginTop:10}}
           data={this.state.users}
           renderItem={({ item }) => (
-            <View >
+            <TouchableOpacity
+            onPress={() => this.setUser()}
+            >
+            <View  style={{marginBottom:15,flexDirection:'row'}}>
                 <Text>{item.name}</Text>
-             {/* <Text>{{item.name}</Text> */}
+                <MaterialCommunityIcons name="chat" style={{position: 'absolute', right: 20}}/>
             </View>
+            </TouchableOpacity>
           )}
         />
+      
+        
                 <Button
                 title="Signout"
                 onPress={() => this.onSignOut()}

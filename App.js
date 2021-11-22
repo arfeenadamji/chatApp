@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from "./src/component/auth/login"
 import RegisterScreen from './src/component/auth/register';
 import UsersScreen from './src/component/screen/users';
+import ChatScreen from './src/component/screen/chat';
 
 import firebase from './src/firebase'
 
@@ -27,6 +28,13 @@ export default function App() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Users" component={UsersScreen} />
+          <Stack.Screen name="Chat" component={ChatScreen}  
+          options={({route}) =>({
+            title:route.params.name,
+            headerBackTitleVisible:false,
+          
+          })}
+          />
 
         </Stack.Navigator>
       </NavigationContainer>
