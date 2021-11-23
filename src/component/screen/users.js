@@ -21,22 +21,23 @@ class Users extends Component {
         console.log('props.route.params.uid from feed',this.props.route.params.uid)
        
     }
-    setUser=()=>{
-        firebase.firestore().collection('parties').doc(this.props.route.params.uid).collection("messages").add({
-            // message: input,
+    setUser=(item)=>{
+        this.props.navigation.navigate('Chat',{id:item.uid1,name:item.name})
+        firebase.firestore().collection('coversation').add({
+        //  firebase.firestore().collection('conversations').collection("messages").collection('parties').add({
             timestamp: Date.now(),
-            
-            uid:this.props.route.params.uid
-
+            parties:{
+            [this.props.route.params.uid1]:true,
+            [item.uid2]:true
+            }
          }); 
-    //     else {
-    //       alert('user object is null')
-    //    }
-        // .collection('party-1').doc(this.props.route.params.uid)
-        // this.props.navigation.navigate('Chat',{id:item.uid,name:item.name})
-    }
-    fetchUsers=()=>{
-       
+        //  firebase.firestore().collection('parties').doc().collection("inbox").doc().collection('uid2').add({
+        //     timestamp: Date.now(),
+        //     uid2:item.uid
+
+        //  }); 
+        }
+    fetchUsers=()=>{    
         firebase.firestore().collection('users')
         .where('uid' ,'!=',  this.props.currentUser.uid)
         .get()
@@ -68,7 +69,7 @@ class Users extends Component {
           data={this.state.users}
           renderItem={({ item }) => (
             <TouchableOpacity
-            onPress={() => this.setUser()}
+            onPress={() => this.setUser(item)}
             >
             <View  style={{marginBottom:15,flexDirection:'row'}}>
                 <Text>{item.name}</Text>
@@ -77,8 +78,6 @@ class Users extends Component {
             </TouchableOpacity>
           )}
         />
-      
-        
                 <Button
                 title="Signout"
                 onPress={() => this.onSignOut()}
@@ -89,7 +88,6 @@ class Users extends Component {
 }
 
 const mapStateToProps = (store) =>{
-    // console.log('store',store)
     return{
         currentUser:store.userState.currentUser
     }

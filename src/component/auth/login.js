@@ -22,7 +22,7 @@ export default function Login(props) {
         .then((snapshot) =>{
             if(snapshot.exists){
                 dispatch({type:'USER_STATE_CHANGE', currentUser:snapshot.data()})
-                props.navigation.navigate('Users',{uid: firebase.auth().currentUser.uid});
+                props.navigation.navigate('Users',{uid1: firebase.auth().currentUser.uid});
             } else{
                 console.log('error from action while saving user',error)
             }
