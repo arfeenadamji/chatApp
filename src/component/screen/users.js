@@ -22,8 +22,6 @@ class Users extends Component {
     }
 
     setUser = (item) => {
-        console.log('this.props.route.params.uid1', this.props.route.params.uid1)
-        console.log('item.uid', item.uid)
         firebase.firestore().collection('conversations')
             .where(`parties.${this.props.route.params.uid1}`, '==', true)
             .where(`parties.${item.uid}`, '==', true)
@@ -63,8 +61,11 @@ class Users extends Component {
                         })
                 } else {
                     let cid;
+                    console.log('snapshot.docs',snapshot.docs)
                     snapshot.docs.forEach(e => {
+                        console.log('e',e)
                         cid = e.data().cid
+                        console.log('e.data()',e.data())
                         console.log("el", e.data().cid)
                     });
                     this.props.navigation.navigate("Chat", { id: item.uid, name: item.name, chatId: cid });
@@ -72,34 +73,6 @@ class Users extends Component {
             }).catch((err) => {
                 console.log(err)
             })
-        // firebase.firestore()
-        //     .collection("conversations")
-        //     .add({
-
-        //         parties: {
-        //             [this.props.route.params.uid1]: true,
-        //             [item.uid]: true
-        //         },
-        //         partiesInfo: {
-        //             [this.props.currentUser.uid]: {
-        //                 name: this.props.currentUser.name,
-        //                 profilePic: null,
-        //                 unreadMessage: 0
-        //             },
-        //             [item.uid]: {
-        //                 name: item.name,
-        //                 profilePic: null,
-        //                 unreadMessage: 0
-        //             }
-        //         }
-        //     }).then((snapshot) => {
-        //         // if (snapshot.exists) {
-        //             // this.setState({ chatId1: snapshot.id } = () => {
-        //             //     this.fetchChat()
-        //             // })
-        //             this.props.navigation.navigate("Chat", { id: item.uid, name: item.name, chatId: snapshot.id});
-        //         // }
-        //     })
     };
     fetchUsers = () => {
         firebase
@@ -128,7 +101,6 @@ class Users extends Component {
     render() {
         return (
             <View>
-                <Text>Users Screen</Text>
                 <FlatList
                     style={{ marginTop: 10 }}
                     data={this.state.users}
