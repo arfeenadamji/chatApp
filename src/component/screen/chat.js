@@ -64,17 +64,17 @@ export function Chat(props) {
     // }
 
     const fetchChat = (db) => {
-        firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages').limit(length)
+        firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages').limit(10)
             .orderBy('createdAt', 'desc')
-            .onSnapshot((snapshot) => {
+            .get((snapshot) => {
                 const last = snapshot.docs[snapshot.docs.length-1];
 
-                // const next = firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages')
-                // .orderBy('createdAt')
-                // .startAfter(last.data().createdAt)
-                // .limit(3);
-                // const nextSnapshot =  next.get();
-                // console.log('Num results:', nextSnapshot.docs.length);
+                const next = firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages')
+                .orderBy('createdAt')
+                .startAfter(last.data().createdAt)
+                .limit(3);
+                const nextSnapshot =  next.get();
+                console.log('Num results:', nextSnapshot.docs.length);
                 let chat = [];
                 snapshot.docs.map((doc) => {
 

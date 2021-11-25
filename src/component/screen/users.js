@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 class Users extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
