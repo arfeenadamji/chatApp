@@ -31,7 +31,11 @@ export function Chat(props) {
         )
     }
     const fetchChat = () => {
-        firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+        firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages')
+        .orderBy('createdAt', 'desc')
+        // .startAfter(message)
+        // .limit(10)
+        .onSnapshot((snapshot) => {
             let chat = [];
             snapshot.docs.map((doc) => {
                 let RandomId=Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
