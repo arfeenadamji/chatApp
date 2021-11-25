@@ -57,6 +57,7 @@ class Users extends Component {
                                 .doc(snapshot.id)
                                 .update({ cid: snapshot.id })
                             this.props.navigation.navigate("Chat", { id: item.uid, name: item.name, chatId: snapshot.id });
+                            console.log('snapshot.id',snapshot.id)
                             // }
                         })
                 } else {
