@@ -19,64 +19,59 @@ class Users extends Component {
 
     componentDidMount() {
         this.fetchUsers();
-        // this.fetchChat()
     }
 
     setUser = (item) => {
-        console.log('this.props.route.params.uid1',this.props.route.params.uid1)
-        console.log('item.uid',item.uid)
+        console.log('this.props.route.params.uid1', this.props.route.params.uid1)
+        console.log('item.uid', item.uid)
         firebase.firestore().collection('conversations')
-        .where(`parties.${this.props.route.params.uid1}`, '==', true)
-        .where(`parties.${item.uid}`, '==', true)
-        .limit(1)
-        .get()
-        .then((snapshot) =>{
-            console.log('123 user',snapshot.empty)
-            if(snapshot.empty){
-            console.log('6789',snapshot)
-            firebase.firestore()
-            .collection("conversations")
-            .add({
-                parties: {
-                    [this.props.route.params.uid1]: true,
-                    [item.uid]: true
-                },
-                partiesInfo: {
-                    [this.props.currentUser.uid]: {
-                        name: this.props.currentUser.name,
-                        profilePic: null,
-                        unreadMessage: 0
-                    },
-                    [item.uid]: {
-                        name: item.name,
-                        profilePic: null,
-                        unreadMessage: 0
-                    }
-                }
-            }).then((snapshot) => {
-                console.log('snapshot snapshot',snapshot)
-                // if (snapshot.exists) {
-                    // this.setState({ chatId1: snapshot.id } = () => {
-                    //     this.fetchChat()
-                    // })
+            .where(`parties.${this.props.route.params.uid1}`, '==', true)
+            .where(`parties.${item.uid}`, '==', true)
+            .limit(1)
+            .get()
+            .then((snapshot) => {
+                console.log('123 user', snapshot.empty)
+                if (snapshot.empty) {
+                    console.log('6789', snapshot)
                     firebase.firestore()
-                    .collection("conversations")
-                    .doc(snapshot.id)
-                    .update({cid: snapshot.id})
-                    this.props.navigation.navigate("Chat", { id: item.uid, name: item.name, chatId: snapshot.id});
-                // }
+                        .collection("conversations")
+                        .add({
+                            parties: {
+                                [this.props.route.params.uid1]: true,
+                                [item.uid]: true
+                            },
+                            partiesInfo: {
+                                [this.props.currentUser.uid]: {
+                                    name: this.props.currentUser.name,
+                                    profilePic: null,
+                                    unreadMessage: 0
+                                },
+                                [item.uid]: {
+                                    name: item.name,
+                                    profilePic: null,
+                                    unreadMessage: 0
+                                }
+                            }
+                        }).then((snapshot) => {
+                            console.log('snapshot snapshot', snapshot)
+                            firebase.firestore()
+                                .collection("conversations")
+                                .doc(snapshot.id)
+                                .update({ cid: snapshot.id })
+                            this.props.navigation.navigate("Chat", { id: item.uid, name: item.name, chatId: snapshot.id });
+                            // }
+                        })
+                } else {
+                    let cid;
+                    snapshot.docs.forEach(e => {
+                        cid = e.data().cid
+                        console.log("el", e.data().cid)
+                    });
+                    this.props.navigation.navigate("Chat", { id: item.uid, name: item.name, chatId: cid });
+                }
+            }).catch((err) => {
+                console.log(err)
             })
-        }else{
-            let cid;
-            snapshot.docs.forEach(e => {
-                 cid= e.data().cid
-                console.log("el",e.data().cid)
-            });
-            this.props.navigation.navigate("Chat", { id: item.uid, name: item.name, chatId: cid});
-        }
-        }).catch((err) =>{
-            console.log(err)
-        })
         // firebase.firestore()
         //     .collection("conversations")
         //     .add({
@@ -106,24 +101,6 @@ class Users extends Component {
         //         // }
         //     })
     };
-    // fetchChat = () => {
-    //     alert('fetch chat')
-    //     return
-    //     firebase.firestore().collection('conversations').doc(this.state.chatId1).collection('messages').get()
-    //         .then((snapshot) => {
-    //             if (snapshot.exists) {
-    //                 console.log('12', snapshot)
-    //             }
-    //             // let chat = [];
-    //             // snapshot.docs.map((doc) => {
-    //             //   chat.push(doc.data());
-    //             //     console.log('sanpshot from of get chat',chat)
-    //             // console.log('sanpshot from of get chat data', snapshot.data())
-
-    //             // })
-    //         })
-    // }
-
     fetchUsers = () => {
         firebase
             .firestore()
@@ -161,8 +138,7 @@ class Users extends Component {
                                 <Text>{item.name}</Text>
                                 <MaterialCommunityIcons
                                     name="chat"
-                                    style={{ position: "absolute", right: 20 }}
-                                />
+                                    style={{ position: "absolute", right: 20 }} />
                             </View>
                         </TouchableOpacity>
                     )}
