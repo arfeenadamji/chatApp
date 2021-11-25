@@ -13,6 +13,7 @@ import { saveUser } from "../../redux/action/index";
 
 export function Chat(props) {
     const [message, setMessage] = useState([]);
+    const [length,setLength] = useState(10);
 
     useEffect(() => {
         fetchChat()
@@ -30,30 +31,68 @@ export function Chat(props) {
             </Send>
         )
     }
-    const fetchChat = () => {
-        firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages')
-        .orderBy('createdAt', 'desc')
-        // .startAfter(message)
-        // .limit(10)
-        .onSnapshot((snapshot) => {
-            let chat = [];
-            snapshot.docs.map((doc) => {
-                let RandomId=Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    // const fetchChat = (db) => {
+    //     firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages').limit(10)
+    //         .orderBy('createdAt', 'desc')
+    //         .onSnapshot((snapshot) => {
+    //             const last = snapshot.docs.length-1;
 
-                let temp = {
-                    _id: RandomId,
-                    text: doc.data().text,
-                    createdAt: doc.data().createdAt,
-                    user: {
-                        _id: doc.data().senderId,
-                        name: props.currentUser.name,
-                        avatar: 'https://placeimg.com/140/140/any',
+    //             const next = firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages')
+    //             .orderBy('createdAt')
+    //             .startAfter(last.data().createdAt)
+    //             .limit(3);
+    //             // const nextSnapshot =  next.get();
+    //             // console.log('Num results:', nextSnapshot.docs.length);
+    //             let chat = [];
+    //             snapshot.docs.map((doc) => {
+
+    //                 let RandomId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    //                 let temp = {
+    //                     _id: RandomId,
+    //                     text: doc.data().text,
+    //                     createdAt: doc.data().createdAt,
+    //                     user: {
+    //                         _id: doc.data().senderId,
+    //                         name: props.currentUser.name,
+    //                         avatar: 'https://placeimg.com/140/140/any',
+    //                     }
+    //                 }
+    //                 chat.push(temp);
+    //                 setMessage(chat)
+    //             })
+    //         })
+    // }
+
+    const fetchChat = (db) => {
+        firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages').limit(length)
+            .orderBy('createdAt', 'desc')
+            .onSnapshot((snapshot) => {
+                const last = snapshot.docs[snapshot.docs.length-1];
+
+                // const next = firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages')
+                // .orderBy('createdAt')
+                // .startAfter(last.data().createdAt)
+                // .limit(3);
+                // const nextSnapshot =  next.get();
+                // console.log('Num results:', nextSnapshot.docs.length);
+                let chat = [];
+                snapshot.docs.map((doc) => {
+
+                    let RandomId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                    let temp = {
+                        _id: RandomId,
+                        text: doc.data().text,
+                        createdAt: doc.data().createdAt,
+                        user: {
+                            _id: doc.data().senderId,
+                            name: props.currentUser.name,
+                            avatar: 'https://placeimg.com/140/140/any',
+                        }
                     }
-                }
-                chat.push(temp);
-                setMessage(chat)
+                    chat.push(temp);
+                    setMessage(chat)
+                })
             })
-        })
     }
     const onSend = useCallback((message = []) => {
         setMessage(previousMessage => GiftedChat.append(previousMessage, message))
@@ -73,11 +112,16 @@ export function Chat(props) {
             alwaysShowSend
             renderSend={renderSend}
             scrollToBottom
+            // onLoadEarlier
+            loadEarlier={true}
+//             onLoadEarlier={this.onLoadEarlier}
+//   isLoadingEarlier={this.state.isLoadingEarlier}
             scrollToBottomComponent={scrollToBottomComponent}
             user={{
                 _id: props.currentUser.uid,
-            }}/>
-    )}
+            }} />
+    )
+}
 
 const mapStateToProps = (store) => {
     return {
