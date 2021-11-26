@@ -19,12 +19,14 @@ class Users extends Component {
     }
 
     componentDidMount() {
+        if(this.props.currentUser){
         this.fetchUsers();
+        }
     }
 
     setUser = (item) => {
         firebase.firestore().collection('conversations')
-            .where(`parties.${this.props.route.params.uid1}`, '==', true)
+            .where(`parties.${firebase.auth().currentUser.uid}`, '==', true)
             .where(`parties.${item.uid}`, '==', true)
             .limit(1)
             .get()
@@ -36,7 +38,7 @@ class Users extends Component {
                         .collection("conversations")
                         .add({
                             parties: {
-                                [this.props.route.params.uid1]: true,
+                                [firebase.auth().currentUser.uid]: true,
                                 [item.uid]: true
                             },
                             partiesInfo: {
@@ -81,8 +83,8 @@ class Users extends Component {
             .firestore()
             .collection("users")
             .where("uid", "!=", this.props.currentUser.uid)
-            .get()
-            .then((snapshot) => {
+            .onSnapshot((snapshot) => {
+            // .then((snapshot) => {
                 let users = [];
                 snapshot.docs.map((doc) => {
                     users.push(doc.data());
@@ -97,7 +99,7 @@ class Users extends Component {
 
     onSignOut = () => {
         firebase.auth().signOut();
-        this.props.navigation.navigate("Login");
+        // this.props.navigation.navigate("Login");
     };
 
     render() {
@@ -124,6 +126,7 @@ class Users extends Component {
 }
 
 const mapStateToProps = (store) => {
+    console.log('21212112',store)
     return {
         currentUser: store.userState.currentUser,
     };

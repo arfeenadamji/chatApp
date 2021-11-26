@@ -13,7 +13,7 @@ import { saveUser } from "../../redux/action/index";
 
 export function Chat(props) {
     const [message, setMessage] = useState([]);
-    const [length,setLength] = useState(10);
+    const [isLoadingEarlier,setisLoadingEarlier] = useState(10);
 
     useEffect(() => {
         fetchChat()
@@ -64,17 +64,17 @@ export function Chat(props) {
     // }
 
     const fetchChat = (db) => {
-        firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages').limit(10)
+        firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages').limit(isLoadingEarlier)
             .orderBy('createdAt', 'desc')
-            .get((snapshot) => {
-                const last = snapshot.docs[snapshot.docs.length-1];
+            .onSnapshot((snapshot) => {
+                // const last = snapshot.docs[snapshot.docs.length-1];
 
-                const next = firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages')
-                .orderBy('createdAt')
-                .startAfter(last.data().createdAt)
-                .limit(3);
-                const nextSnapshot =  next.get();
-                console.log('Num results:', nextSnapshot.docs.length);
+                // const next = firebase.firestore().collection('conversations').doc(props.route.params.chatId).collection('messages')
+                // .orderBy('createdAt')
+                // .startAfter(last.data().createdAt)
+                // .limit(3);
+                // const nextSnapshot =  next.get();
+                // console.log('Num results:', nextSnapshot.docs.length);
                 let chat = [];
                 snapshot.docs.map((doc) => {
 
@@ -105,6 +105,14 @@ export function Chat(props) {
     const scrollToBottomComponent = () => {
         return (<FontAwesome name='angle-double-down' size={22} color='#333' />);
     }
+    const onLoadEarlier =() =>{
+        let load;
+        load = isLoadingEarlier + 10
+        setisLoadingEarlier(load)
+        fetchChat()
+        
+        // alert('3456')
+    }
     return (
         <GiftedChat
             messages={message}
@@ -114,8 +122,8 @@ export function Chat(props) {
             scrollToBottom
             // onLoadEarlier
             loadEarlier={true}
-//             onLoadEarlier={this.onLoadEarlier}
-//   isLoadingEarlier={this.state.isLoadingEarlier}
+            onLoadEarlier={onLoadEarlier}
+//   isLoadingEarlier={{isLoadingEarlier}}
             scrollToBottomComponent={scrollToBottomComponent}
             user={{
                 _id: props.currentUser.uid,

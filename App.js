@@ -7,6 +7,8 @@ import LoginScreen from "./src/component/auth/login";
 import RegisterScreen from "./src/component/auth/register";
 import UsersScreen from "./src/component/screen/users";
 import ChatScreen from "./src/component/screen/chat";
+import temp from "./src/component/temp";
+import { PersistGate } from 'redux-persist/integration/react'
 
 import firebase from "./src/firebase";
 
@@ -42,40 +44,45 @@ export class App extends Component {
     })
   }
   render() {
-    const {loggedIn,loaded} =this.state;
+    const { loggedIn, loaded } = this.state;
 
     if (loggedIn) {
-      return (
+    return (
         // <View style={styles.container}>
-          <Provider store={store}>
- <NavigationContainer>
-          <Stack.Navigator initialRouteName="Users">
-            <Stack.Screen name="Users" component={UsersScreen} />
-            <Stack.Screen
-              name="Chat"
-              component={ChatScreen}
-              options={({ route }) => ({
-                title: route.params.name,
-                headerBackTitleVisible: false,
-              })}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <Provider store={store}>
+                <PersistGate loading={null} persistor={persistor}>
+          <NavigationContainer>
+             {/* <Stack.Navigator initialRouteName="temp"> */}
+            <Stack.Navigator initialRouteName="Users">
+            {/* <Stack.Screen name="temp" component={temp} /> */}
+              <Stack.Screen name="Users" component={UsersScreen} />
+              <Stack.Screen
+                name="Chat"
+                component={ChatScreen}
+                options={({ route }) => ({
+                  title: route.params.name,
+                  headerBackTitleVisible: false,
+                })}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
 
-          
-          </Provider>
+          </PersistGate>
+        </Provider>
         // </View>
       )
     } else if (!loggedIn) {
       return (
-      // <Provider>
+        <Provider store={store}>
+                <PersistGate loading={null} persistor={store}>
         <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-      // </Provider>
+          <Stack.Navigator initialRouteName="Login">
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+        </PersistGate>
+         </Provider>
       );
     } else {
       return (

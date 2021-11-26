@@ -15,14 +15,16 @@ export default function Login(props) {
     const onSignIn=() =>{
         firebase.auth().signInWithEmailAndPassword(email,pass)
         .then((result) =>{
+          console.log('2323',result)
+          // return
          if(result !== undefined){
           firebase.firestore().collection('users')
-        .doc(firebase.auth().currentUser?.uid)
+        .doc(result.user?.uid)
         .get()
         .then((snapshot) =>{
             if(snapshot.exists){
                 dispatch({type:'USER_STATE_CHANGE', currentUser:snapshot.data()})
-                props.navigation.navigate('Users',{uid1: firebase.auth().currentUser.uid});
+                props.navigation.navigate('Users',{uid1: result.user.uid});
             } else{
                 console.log('error from action while saving user',error)
             }
