@@ -8,7 +8,6 @@ import RegisterScreen from "./src/component/auth/register";
 import UsersScreen from "./src/component/screen/users";
 import ChatScreen from "./src/component/screen/chat";
 import temp from "./src/component/temp";
-import { PersistGate } from 'redux-persist/integration/react'
 
 import firebase from "./src/firebase";
 
@@ -17,7 +16,21 @@ import { createStore, applyMiddleware } from "redux";
 import rootReducer from "./src/redux/reducers";
 import thunk from "redux-thunk";
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore, persistReducer } from "redux-persist";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+// const store = createStore(rootReducer, applyMiddleware(thunk));
+
+const persistConfig = {
+  key: "root",
+  storage: AsyncStorage,
+  timeout: null,
+};
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+const store = createStore(persistedReducer, {}, applyMiddleware);
+const persistor = persistStore(store);
 
 const Stack = createStackNavigator();
 export class App extends Component {
@@ -48,11 +61,9 @@ export class App extends Component {
 
     if (loggedIn) {
     return (
-        // <View style={styles.container}>
         <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
           <NavigationContainer>
-             {/* <Stack.Navigator initialRouteName="temp"> */}
             <Stack.Navigator initialRouteName="Users">
             {/* <Stack.Screen name="temp" component={temp} /> */}
               <Stack.Screen name="Users" component={UsersScreen} />
@@ -69,12 +80,11 @@ export class App extends Component {
 
           </PersistGate>
         </Provider>
-        // </View>
       )
     } else if (!loggedIn) {
       return (
         <Provider store={store}>
-                <PersistGate loading={null} persistor={store}>
+                <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login" component={LoginScreen} />

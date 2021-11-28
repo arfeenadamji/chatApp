@@ -4,7 +4,7 @@ import * as firebase from 'firebase'
 import { saveUser}  from '../../redux/action/index'
 import { connect, useDispatch, useSelector } from 'react-redux'
 
-export default function Login(props) {
+export default function Login({navigation}) {
   const dispatch = useDispatch()
 
 
@@ -15,8 +15,6 @@ export default function Login(props) {
     const onSignIn=() =>{
         firebase.auth().signInWithEmailAndPassword(email,pass)
         .then((result) =>{
-          console.log('2323',result)
-          // return
          if(result !== undefined){
           firebase.firestore().collection('users')
         .doc(result.user?.uid)
@@ -24,7 +22,7 @@ export default function Login(props) {
         .then((snapshot) =>{
             if(snapshot.exists){
                 dispatch({type:'USER_STATE_CHANGE', currentUser:snapshot.data()})
-                props.navigation.navigate('Users',{uid1: result.user.uid});
+              navigation.navigate('Users',{uid1: result.user.uid});
             } else{
                 console.log('error from action while saving user',error)
             }
