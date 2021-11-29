@@ -22,7 +22,7 @@ export default function Login({navigation}) {
         .then((snapshot) =>{
             if(snapshot.exists){
                 dispatch({type:'USER_STATE_CHANGE', currentUser:snapshot.data()})
-              navigation.navigate('Users',{uid1: result.user.uid});
+              navigation.navigate('Users');
             } else{
                 console.log('error from action while saving user',error)
             }

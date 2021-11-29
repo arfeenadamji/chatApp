@@ -29,7 +29,7 @@ const persistConfig = {
   timeout: null,
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-const store = createStore(persistedReducer, {}, applyMiddleware);
+const store = createStore(persistedReducer, applyMiddleware(thunk));
 const persistor = persistStore(store);
 
 const Stack = createStackNavigator();

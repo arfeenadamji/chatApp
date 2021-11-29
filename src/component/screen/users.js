@@ -99,7 +99,6 @@ class Users extends Component {
 
     onSignOut = () => {
         firebase.auth().signOut();
-        // this.props.navigation.navigate("Login");
     };
 
     render() {
@@ -126,7 +125,7 @@ class Users extends Component {
 }
 
 const mapStateToProps = (store) => {
-    console.log('21212112',store)
+    console.log('store from users',store)
     return {
         currentUser: store.userState.currentUser,
     };
